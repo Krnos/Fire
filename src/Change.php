@@ -33,15 +33,6 @@ class Change extends Model
     protected $dates = ['recorded_at'];
 
     /**
-    * The attributes default value.
-    *
-    * @var array
-    */
-    protected $attributes = [
-        'changes' => '{}'
-    ];
-
-    /**
      * The attributes that should be cast to native types.
      *
      * @var array
@@ -63,16 +54,6 @@ class Change extends Model
     * @var array
     */
     protected $hidden = [];
-
-    /**
-    * Get the table name.
-    *
-    * @return string
-    */
-    public function getTable()
-    {
-        return config('fire.changes_table');
-    }
 
     /**
      * Create a new Eloquent model instance.

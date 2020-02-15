@@ -18,45 +18,46 @@ class ChangeObserver
     public function created(Model $model)
     {   
         if(!static::filter('created')) return;
-
+        
         broadcast(new FireEvent($model, Change::TYPE_CREATED, trans('krnos::fire.created', ['model' => static::getModelName($model), 'label' => $model->getModelLabel()]), static::getChangesForSubject($model, Change::TYPE_CREATED), auth()->check() ? auth()->user() : null))->toOthers();
-
+        
     }
-
+    
     /**
-    * Listen to the Model updated event.
-    *
-    * @param  mixed $model
-    * @return void
-    */
+     * Listen to the Model updated event.
+     *
+     * @param  mixed $model
+     * @return void
+     */
     public function updated(Model $model)
     {   
         if(!static::filter('updated')) return;
+        if($model->isDirty($model->getDeletedAtColumn()) && count($model->getDirty()) == 1) return;
 
         broadcast(new FireEvent($model, Change::TYPE_UPDATED, trans('krnos::fire.updated', ['model' => static::getModelName($model), 'label' => $model->getModelLabel()]), static::getChangesForSubject($model, Change::TYPE_UPDATED), auth()->check() ? auth()->user() : null))->toOthers();
-
+        
     }
-
+    
     /**
-    * Listen to the Model deleted event.
-    *
-    * @param  mixed $model
-    * @return void
-    */
+     * Listen to the Model deleted event.
+     *
+     * @param  mixed $model
+     * @return void
+     */
     public function deleted(Model $model)
     {   
         if(!static::filter('deleted')) return;
-
+        
         broadcast(new FireEvent($model, Change::TYPE_DELETED, trans('krnos::fire.deleted', ['model' => static::getModelName($model), 'label' => $model->getModelLabel()]), static::getChangesForSubject($model, Change::TYPE_DELETED), auth()->check() ? auth()->user() : null))->toOthers();
-
+        
     }
-
+    
     /**
-    * Listen to the Model restored event.
-    *
-    * @param  mixed $model
-    * @return void
-    */
+     * Listen to the Model restored event.
+     *
+     * @param  mixed $model
+     * @return void
+     */
     public function restored(Model $model)
     {   
         if(!static::filter('restored')) return;

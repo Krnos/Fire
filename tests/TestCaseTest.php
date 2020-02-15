@@ -55,7 +55,7 @@ class TestCaseTest extends OrchestraTestCase
         $app['router']->get('articles/{id}', function($id) {
             $model = Article::find($id);
             if(!is_null($model)) {
-                event(new FireEvent($model, 'Query Article ' . $model->title, $model->pluck('id')->toArray()));
+                event(new FireEvent($model,Change::TYPE_CREATED,'Query Article ' . $model->title, $model->pluck('id')->toArray(), auth()->user()));
             }
             return $model;
         });        
@@ -98,7 +98,7 @@ class TestCaseTest extends OrchestraTestCase
         $this->assertEquals(Article::class, $change->model_type);
         $this->assertEquals($article->id, $change->model_id);
         $this->assertEquals('Created Article ' . $content['title'], $change->message);
-        $this->assertTrue($change->performed_at instanceof \Illuminate\Support\Carbon);
+        $this->assertTrue($change->recorded_at instanceof \Illuminate\Support\Carbon);
         $change->delete();
 
         $data = ['title' => 'eligendi fugiat culpa'];
@@ -106,8 +106,8 @@ class TestCaseTest extends OrchestraTestCase
         $change = Change::first();
         $this->assertNotNull($change);
         $this->assertEquals($article->id, $change->model_id);
-        $this->assertEquals('Updating Article ' . $content['title'], $change->message);
-        $this->assertEquals([['key' => 'title', 'old' => 'enim officiis omnis', 'new' => 'eligendi fugiat culpa']], $change->meta);
+        $this->assertEquals('Updated Article ' . $content['title'], $change->message);
+        $this->assertEquals(['before' => ['title' => 'enim officiis omnis'], 'after' => ['title' => 'eligendi fugiat culpa']], $change->changes);
         $change->delete();
         $article->refresh();
 
@@ -115,7 +115,7 @@ class TestCaseTest extends OrchestraTestCase
         $change = Change::first();
         $this->assertNotNull($change);
         $this->assertEquals($article->id, $change->model_id);
-        $this->assertEquals('Deleting Article ' . $article->title, $change->message);
+        $this->assertEquals('Deleted Article ' . $article->title, $change->message);
         $change->delete();
 
         $this->json('POST', '/articles/' . $article->id . '/restore');
@@ -135,14 +135,14 @@ class TestCaseTest extends OrchestraTestCase
 
         $article = Article::first();
         $this->assertNotNull($article);
-        $histories = $article->histories;
-        $this->assertNotNull($histories);
-        $this->assertEquals(1, count($histories));
-        $change = $histories[0];
+        $changes = $article->changes;
+        $this->assertNotNull($changes);
+        $this->assertEquals(1, count($changes));
+        $change = $changes[0];
         $this->assertTrue($change->hasUser());
         $this->assertNotNull($change->user());
         $this->assertEquals($user->toJson(), $change->user()->toJson());
-        $this->assertEquals($article->makeHidden('histories')->toJson(), $change->model()->toJson());
+        $this->assertEquals($article->makeHidden('changes')->toJson(), $change->model()->toJson());
         
         $operations = $user->operations;
         $this->assertNotNull($operations);
@@ -158,10 +158,10 @@ class TestCaseTest extends OrchestraTestCase
 
         $article = Article::first();
         $this->assertNotNull($article);
-        $histories = $article->histories;
-        $this->assertNotNull($histories);
-        $this->assertEquals(1, count($histories));
-        $change = $histories[0];
+        $changes = $article->changes;
+        $this->assertNotNull($changes);
+        $this->assertEquals(1, count($changes));
+        $change = $changes[0];
         $this->assertNotTrue($change->hasUser());
         $this->assertNull($change->user());
     }
@@ -176,6 +176,6 @@ class TestCaseTest extends OrchestraTestCase
         $this->assertNotNull($change);
         $this->assertEquals($article->id, $change->model_id);
         $this->assertEquals('Query Article ' . $article->title, $change->message);
-        $this->assertEquals([$article->id], $change->meta);
+        $this->assertEquals([$article->id], $change->changes);
     }
 }
