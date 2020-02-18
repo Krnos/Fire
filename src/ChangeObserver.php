@@ -5,6 +5,7 @@ namespace Krnos\Fire;
 use Krnos\Fire\Change;
 use Krnos\Fire\Events\FireEvent;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Arr;
 
 class ChangeObserver
@@ -32,7 +33,9 @@ class ChangeObserver
     public function updated(Model $model)
     {   
         if(!static::filter('updated')) return;
-        if($model->isDirty($model->getDeletedAtColumn()) && count($model->getDirty()) == 1) return;
+        if (Schema::hasColumn($model->getTable(), 'deleted_at')) {
+            if($model->isDirty($model->getDeletedAtColumn()) && count($model->getDirty()) == 1) return;
+        }
 
         broadcast(new FireEvent($model, Change::TYPE_UPDATED, trans('krnos::fire.updated', ['model' => static::getModelName($model), 'label' => $model->getModelLabel()]), static::getChangesForSubject($model, Change::TYPE_UPDATED), auth()->check() ? auth()->user() : null))->toOthers();
         
