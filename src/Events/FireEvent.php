@@ -54,7 +54,7 @@ class FireEvent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('Fire'.$this->name_model);
+        return new Channel($this->name_model);
     }
 
 }
