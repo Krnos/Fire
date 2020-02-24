@@ -13,13 +13,13 @@ return [
     |
     */
 
-    'created' => ':model creado :label',
+    'created' => ':model :label creado',
 
-    'updated' => ':model actualizado :label',
+    'updated' => ':model :label actualizado',
 
-    'deleted' => ':model eliminado :label',
+    'deleted' => ':model :label eliminado',
 
-    'restored' => ':model restaurado :label',
+    'restored' => ':model :label restaurado',
 
     //you may added your own model name language line here
     'models' => [
