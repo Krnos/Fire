@@ -7,6 +7,7 @@ use Krnos\Fire\Events\FireEvent;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 class ChangeObserver
 {
@@ -72,7 +73,7 @@ class ChangeObserver
     public static function getModelName(Model $model)
     {
         $class = class_basename($model);
-        $key = 'krnos::fire.models.'.snake_case($class);
+        $key = 'krnos::fire.models.'.Str::snake($class);
         $value =  trans($key);
 
         return $key == $value ? $class : $value;
