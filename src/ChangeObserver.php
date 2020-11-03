@@ -48,9 +48,9 @@ class ChangeObserver
      * @param  mixed $model
      * @return void
      */
-    public function deleted(Model $model)
+    public function deleting(Model $model)
     {   
-        if(!static::filter('deleted')) return;
+        if(!static::filter('deleting')) return;
         
         broadcast(new FireEvent($model, Change::TYPE_DELETED, trans('krnos::fire.deleted', ['model' => static::getModelName($model), 'label' => $model->getModelLabel()]), static::getChangesForSubject($model, Change::TYPE_DELETED), auth()->check() ? auth()->user() : null))->toOthers();
         
