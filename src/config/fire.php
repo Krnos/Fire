@@ -26,11 +26,11 @@ return [
     |--------------------------------------------------------------
     |
     | Events in this array will be recorded.
-    | Available events are: created, updated, deleted, restored
+    | Available events are: created, updated, deleting, restored
     |
     */
     'events_whitelist' => [
-        'created', 'updated', 'deleted', 'restored',
+        'created', 'updated', 'deleting', 'restored',
     ],
 
     /*
