@@ -107,7 +107,7 @@ class TestCaseTest extends OrchestraTestCase
         $this->assertNotNull($change);
         $this->assertEquals($article->id, $change->model_id);
         $this->assertEquals('Updated Article ' . $content['title'], $change->message);
-        $this->assertEquals(['before' => ['title' => 'enim officiis omnis'], 'after' => ['title' => 'eligendi fugiat culpa']], $change->changes);
+        $this->assertEquals(['before' => ['title' => 'enim officiis omnis', 'id' => '1'], 'after' => ['title' => 'eligendi fugiat culpa' , 'id' => '1']], $change->changes);
         $change->delete();
         $article->refresh();
 
