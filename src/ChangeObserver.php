@@ -125,7 +125,6 @@ class ChangeObserver
         $after = [];
 
         switch ($type) {
-            case Change::TYPE_CREATED:
             case Change::TYPE_RESTORED:
                 $after = $subject->getAttributes();
                 break;
