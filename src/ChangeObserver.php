@@ -21,7 +21,7 @@ class ChangeObserver
     {   
         if(!static::filter('created')) return;
         
-        broadcast(new FireEvent($model, Change::TYPE_CREATED, trans('krnos::fire.created', ['model' => static::getModelName($model), 'label' => $model->getModelLabel()]), static::getChangesForSubject($model, Change::TYPE_CREATED), auth()->check() ? auth()->user() : null))->toOthers();
+        broadcast(new FireEvent($model->withoutRelations(), Change::TYPE_CREATED, trans('krnos::fire.created', ['model' => static::getModelName($model), 'label' => $model->getModelLabel()]), static::getChangesForSubject($model, Change::TYPE_CREATED), auth()->check() ? auth()->user() : null))->toOthers();
         
     }
     
@@ -38,7 +38,7 @@ class ChangeObserver
             if($model->isDirty($model->getDeletedAtColumn()) && count($model->getDirty()) == 1) return;
         }
 
-        broadcast(new FireEvent($model, Change::TYPE_UPDATED, trans('krnos::fire.updated', ['model' => static::getModelName($model), 'label' => $model->getModelLabel()]), static::getChangesForSubject($model, Change::TYPE_UPDATED), auth()->check() ? auth()->user() : null))->toOthers();
+        broadcast(new FireEvent($model->withoutRelations(), Change::TYPE_UPDATED, trans('krnos::fire.updated', ['model' => static::getModelName($model), 'label' => $model->getModelLabel()]), static::getChangesForSubject($model, Change::TYPE_UPDATED), auth()->check() ? auth()->user() : null))->toOthers();
         
     }
     
@@ -52,7 +52,7 @@ class ChangeObserver
     {   
         if(!static::filter('deleting')) return;
         
-        broadcast(new FireEvent($model, Change::TYPE_DELETED, trans('krnos::fire.deleted', ['model' => static::getModelName($model), 'label' => $model->getModelLabel()]), static::getChangesForSubject($model, Change::TYPE_DELETED), auth()->check() ? auth()->user() : null))->toOthers();
+        broadcast(new FireEvent($model->withoutRelations(), Change::TYPE_DELETED, trans('krnos::fire.deleted', ['model' => static::getModelName($model), 'label' => $model->getModelLabel()]), static::getChangesForSubject($model, Change::TYPE_DELETED), auth()->check() ? auth()->user() : null))->toOthers();
         
     }
     
@@ -66,7 +66,7 @@ class ChangeObserver
     {   
         if(!static::filter('restored')) return;
 
-        broadcast(new FireEvent($model, Change::TYPE_RESTORED, trans('krnos::fire.restored', ['model' => static::getModelName($model), 'label' => $model->getModelLabel()]), static::getChangesForSubject($model, Change::TYPE_RESTORED), auth()->check() ? auth()->user() : null))->toOthers();
+        broadcast(new FireEvent($model->withoutRelations(), Change::TYPE_RESTORED, trans('krnos::fire.restored', ['model' => static::getModelName($model), 'label' => $model->getModelLabel()]), static::getChangesForSubject($model, Change::TYPE_RESTORED), auth()->check() ? auth()->user() : null))->toOthers();
 
     }
 
